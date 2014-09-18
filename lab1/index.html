@@ -18,14 +18,18 @@
 
        //Adding Infowindows
          var infowindow1 = new google.maps.InfoWindow({
-          content: '<div><p>The Crucible</p></div>'
+          content: '<div><h2>The Crucible</h2>'+
+                  '<p>This cast bronze and stainless steel sculpture was created by Stuart Nielsen in 1996. It sits outside of Amundson Hall and is visible from Washington Avenue. Currently, the area around The Crucible is under construction. It is very lonely. <br><br><b>Location:</b> 44.973901,-93.232357 <br><b>Accuracy:</b> These coordinates were taken with an iPhone 5s and then cross referenced visually with Google satellite imagery.</p>'+ 
+                   '<a href="../files/crucible.jpg"><img src="../files/crucible.jpg" style="max-width:350px;" alt="Crucible Photo" /><\a>' +
+                  '</div>',
+          maxWidth: 350,
          });
-
           var infowindow2 = new google.maps.InfoWindow({
           content: '<div><h2>The Shoe Tree</h2>'+
-                  '<p>This is the magical tree of shoes. While not specifically a sculpture, this tree is an artistic, community installation that symbolizes the West Bank campus. There are many theories as to the origin of the shoe tree - the most common is that it is a tradition for graduating students to throw their shoes on the tree as a symbol of their journey at the University of Minnesota.<br><br><b>Location:</b> 44.972407,-93.241798 <br><b>Accuracy:</b> These coordinates were taken with an iPhone 5s and then cross referenced visually with Google satellite imagery.</p>'+
-                  '</div>'
-          //maxWidth: 600,
+                  '<p>This is the magical tree of shoes. While not specifically a sculpture, this tree is an artistic, community installation that symbolizes the West Bank campus. There are many theories as to the origin of the shoe tree - the most common is that it is a tradition for graduating students to throw their shoes on the tree as a symbol of their journey at the University of Minnesota.<br><br><b>Location:</b> 44.972407,-93.241798 <br><b>Accuracy:</b> These coordinates were taken with an iPhone 5s and then cross referenced visually with Google satellite imagery.</p>'+ 
+                  '<a href="../files/shoetree.jpg"><img src="../files/shoetree.jpg" style="max-width:350px;" alt="Shoe Tree Photo" /><\a>' +
+                  '</div>',
+          maxWidth: 350,
          });
 
         //Adding markers
