@@ -1,0 +1,88 @@
+SQL> SELECT NAME, POPULATION
+  2  FROM COUNTRY
+  3  WHERE REGION ='South America'
+  4  AND YEAR = 2011
+  5  ORDER BY POPULATION;
+
+NAME                                               POPULATION                   
+-------------------------------------------------- ----------                   
+Suriname                                               491989                   
+Guyana                                                 744768                   
+Uruguay                                               3308535                   
+Paraguay                                              6459058                   
+Bolivia                                              10118683                   
+Ecuador                                              15007343                   
+Chile                                                16888760                   
+Venezuela                                            27635743                   
+Peru                                                 29248943                   
+Argentina                                            41769726                   
+Brazil                                              203429773                   
+
+11 rows selected.
+
+SQL> SELECT *
+  2  FROM COUNTRY
+  3  WHERE REGION = 'North America'
+  4  AND POPULATION < 10000000
+  5  AND YEAR = 2011;
+
+NAME                                               YEAR                         
+-------------------------------------------------- ----                         
+REGION                                                             AREA         
+------------------------------------------------------------ ----------         
+POPULATION        GDP                                                           
+---------- ----------                                                           
+Bermuda                                            2011                         
+North America                                                        50         
+     68679       .046                                                           
+                                                                                
+
+SQL> SELECT REGION
+  2  FROM COUNTRY
+  3  WHERE regexp_like (NAME, 'x')
+  4  GROUP BY REGION;
+
+REGION                                                                          
+------------------------------------------------------------                    
+Europe                                                                          
+North America                                                                   
+
+SQL> SELECT count(UNIQUE NAME)
+  2  FROM COUNTRY
+  3  WHERE region = 'Africa';
+
+COUNT(UNIQUENAME)                                                               
+-----------------                                                               
+               44                                                               
+
+SQL> SELECT avg(AREA)
+  2  FROM COUNTRY
+  3  WHERE REGION ='Central America and the Caribbean'
+  4  AND YEAR = 2011
+  5  GROUP BY region;
+
+ AVG(AREA)                                                                      
+----------                                                                      
+32050.5217                                                                      
+
+SQL> SELECT foo.r FinalList
+  2  FROM
+  3  	(SELECT UNIQUE REGION r, count(NAME) c
+  4  	FROM COUNTRY
+  5  	WHERE POPULATION > 100000000
+  6  	AND YEAR = 2011
+  7  	GROUP BY REGION) foo
+  8  WHERE c >= 5;
+
+FINALLIST                                                                       
+------------------------------------------------------------                    
+Asia                                                                            
+
+SQL> SPOOL OFF
+
+INSERT INTO COUNTRY (NAME, POPULATION, AREA, YEAR)
+  VALUES ('CCC', 1, 9999, 2015);
+
+DELETE FROM COUNTRY
+WHERE REGION IS NULL;
+
