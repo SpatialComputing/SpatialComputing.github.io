@@ -1,0 +1,13 @@
+GEOCODING API (capitals)
+Kinshasa, Democratic Republic of Congo - Lat: -4.331666999999999 Lon: 15.313889000000017
+Tokyo, Japan - Lat: 35.6894875 Lon: 139.69170639999993
+Warsaw, Poland - Lat: 52.2296756 Lat: 52.2296756 Lon: 21.012228700000037
+Ottawa, Canada - Lat: 45.4215296 Lon: -75.69719309999999
+Canberra, Australia - Lat: -35.2819998 Lon: 149.12868430000003
+Quito, Ecuador - Lat: -0.1806532 Lon: -78.46783820000002
+
+REVERSE GEOCODING API (cities)
+1. Krakow, Poland
+2. Zvishavane, Zimbabwe
+3. Dalad, Ordos, Inner Mongolia, China
+4. No valid address (in NW on Nipow Island on the border of Manitoba and Nunavut)
