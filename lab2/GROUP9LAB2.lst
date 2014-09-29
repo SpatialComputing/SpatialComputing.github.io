@@ -1,0 +1,146 @@
+SQL> SELECT n.NAME_LONG, SDO_UTIL.TO_WKTGEOMETRY(SDO_GEOM.SDO_CENTROID (n.GEOMETRY, 0.5)) as centroid
+  2  FROM F15CS5715G33.COUNTRIES_VIEW n
+  3  WHERE n.name_long = 'Brazil';
+
+NAME_LONG                                                                       
+--------------------------------------------------------------------------------
+CENTROID                                                                        
+--------------------------------------------------------------------------------
+Brazil                                                                          
+POINT (-53.0543400357671 -10.8067736434989)                                     
+                                                                                
+
+SQL> SELECT n.NAME_LONG, SDO_UTIL.TO_WKTGEOMETRY(SDO_GEOM.SDO_MBR (n.GEOMETRY)) as mbr
+  2  FROM F15CS5715G33.COUNTRIES_VIEW n
+  3  WHERE n.name_long = 'Japan';
+
+NAME_LONG                                                                       
+--------------------------------------------------------------------------------
+MBR                                                                             
+--------------------------------------------------------------------------------
+Japan                                                                           
+POLYGON ((129.408463169473 31.0295791692282, 145.543137241803 31.0295791692282, 
+                                                                                
+
+SQL> SELECT c.name
+  2  FROM F15CS5715G33.RIVERS_VIEW r, F15CS5715G33.CITIES_VIEW c
+  3  WHERE r.name= 'Amazon'
+  4  AND SDO_GEOM.WITHIN_DISTANCE (c.geometry, 10, r.geometry, 0.5) = 'TRUE';
+
+NAME                                                                            
+--------------------------------------------------------------------------------
+Georgetown                                                                      
+Paramaribo                                                                      
+Lima                                                                            
+Quito                                                                           
+Sucre                                                                           
+La Paz                                                                          
+Bogota                                                                          
+
+7 rows selected.
+
+SQL> SELECT SDO_GEOM.SDO_DISTANCE(rivers.geom, rivers.DIMINFO, cities.geom, cities.DIMINFO) as Distance
+  2  FROM
+  3  (SELECT r.name name, r.geometry geom, rm.DIMINFO DIMINFO
+  4  FROM F15CS5715G33.RIVERS_VIEW r, user_sdo_geom_metadata rm
+  5  WHERE rm.TABLE_NAME = 'RIVERS_VIEW'
+  6  AND rm.COLUMN_NAME = 'GEOMETRY') rivers,
+  7  (SELECT c.name name, c.geometry geom, cm.DIMINFO DIMINFO
+  8  FROM F15CS5715G33.CITIES_VIEW c, user_sdo_geom_metadata cm
+  9  WHERE cm.TABLE_NAME = 'CITIES_VIEW'
+ 10  AND cm.COLUMN_NAME = 'GEOMETRY') cities
+ 11  WHERE cities.name='Moscow'
+ 12  AND rivers.name = 'Ob';
+
+  DISTANCE                                                                      
+----------                                                                      
+28.6411103                                                                      
+
+SQL> SELECT r.NAME, SDO_GEOM.SDO_LENGTH (r.GEOMETRY, 0.5) as length
+  2  FROM F15CS5715G33.RIVERS_VIEW r
+  3  ORDER BY length DESC;
+
+NAME                                                                            
+--------------------------------------------------------------------------------
+    LENGTH                                                                      
+----------                                                                      
+Lena                                                                            
+52.8565726                                                                      
+                                                                                
+Ob                                                                              
+48.3957036                                                                      
+                                                                                
+Peace                                                                           
+44.8425839                                                                      
+                                                                                
+
+NAME                                                                            
+--------------------------------------------------------------------------------
+    LENGTH                                                                      
+----------                                                                      
+Mississippi                                                                     
+44.7990466                                                                      
+                                                                                
+Chang (Yangtze)                                                                 
+42.9235876                                                                      
+                                                                                
+Nile                                                                            
+42.6988567                                                                      
+                                                                                
+
+NAME                                                                            
+--------------------------------------------------------------------------------
+    LENGTH                                                                      
+----------                                                                      
+Amazon                                                                          
+40.4145318                                                                      
+                                                                                
+Mekong                                                                          
+34.9773806                                                                      
+                                                                                
+Congo                                                                           
+31.4881537                                                                      
+                                                                                
+
+NAME                                                                            
+--------------------------------------------------------------------------------
+    LENGTH                                                                      
+----------                                                                      
+Danube                                                                          
+26.6790295                                                                      
+                                                                                
+Brahmaputra                                                                     
+25.2124197                                                                      
+                                                                                
+Paran?                                                                          
+24.4381505                                                                      
+                                                                                
+
+NAME                                                                            
+--------------------------------------------------------------------------------
+    LENGTH                                                                      
+----------                                                                      
+Peace                                                                           
+.117248942                                                                      
+                                                                                
+Yangtze                                                                         
+.036658893                                                                      
+                                                                                
+
+14 rows selected.
+
+SQL> SELECT *
+  2  FROM (SELECT c.name_long, SDO_GEOM.SDO_AREA(c.GEOMETRY, 0.5) as area
+  3  FROM F15CS5715G33.COUNTRIES_VIEW c
+  4  ORDER BY area DESC)
+  5  WHERE rownum = 1;
+
+NAME_LONG                                                                       
+--------------------------------------------------------------------------------
+      AREA                                                                      
+----------                                                                      
+Antarctica                                                                      
+6028.83619                                                                      
+                                                                                
+
+SQL> SPOOL OFF
