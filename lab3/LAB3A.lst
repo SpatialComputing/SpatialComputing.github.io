@@ -1,0 +1,139 @@
+-------GROUP 9 RESULTS-----------------------------------------------------
+
+SQL> SELECT SDO_NET.GET_NO_OF_LINKS('airport') FROM DUAL;
+
+SDO_NET.GET_NO_OF_LINKS('AIRPORT')                                              
+----------------------------------                                              
+                              4093                                              
+
+SQL> SELECT SDO_NET.GET_NO_OF_NODES('airport') FROM DUAL;
+
+SDO_NET.GET_NO_OF_NODES('AIRPORT')                                              
+----------------------------------                                              
+                               293                                              
+
+SQL> SELECT SDO_NET.GET_NODE_DEGREE('airport', 14869) FROM DUAL;
+
+SDO_NET.GET_NODE_DEGREE('AIRPORT',14869)                                        
+----------------------------------------                                        
+                                     162                                        
+
+SQL> SELECT avg(SDO_NET.GET_NODE_DEGREE('airport', ID.NODE_ID)) AVERAGE FROM DUAL,
+  2  ((SELECT NODE_ID FROM airport_node$)) ID;
+
+   AVERAGE                                                                      
+----------                                                                      
+27.9385666                                                                      
+
+SQL> WITH links_to_durango (START_NODE_ID, END_NODE_ID, LINK_LEVEL) AS
+  2  (
+  3  SELECT START_NODE_ID, END_NODE_ID, 0 LINK_LEVEL
+  4  FROM airport_link$
+  5  WHERE START_NODE_ID = 11413
+  6  UNION ALL
+  7  SELECT a.START_NODE_ID, a.END_NODE_ID, l.LINK_LEVEL+1
+  8  FROM links_to_durango l, airport_link$ a
+  9  WHERE a.START_NODE_ID = a.END_NODE_ID
+ 10  AND l.LINK_LEVEL <=1
+ 11  )
+ 12  SELECT START_NODE_ID, END_NODE_ID, LINK_LEVEL
+ 13  FROM links_to_durango
+ 14  WHERE LINK_LEVEL <=1
+ 15  ORDER BY LINK_LEVEL;
+
+START_NODE_ID END_NODE_ID LINK_LEVEL                                            
+------------- ----------- ----------                                            
+        11413       11298          0                                            
+        11413       14107          0                                            
+        11413       11292          0                                            
+
+SQL> WITH links_to_AK (START_NODE_ID, END_NODE_ID, LINK_LEVEL) AS
+  2  (
+  3  SELECT START_NODE_ID, END_NODE_ID, 0 LINK_LEVEL
+  4  FROM airport_link$
+  5  WHERE START_NODE_ID = 11336
+  6  UNION ALL
+  7  SELECT a.START_NODE_ID, a.END_NODE_ID, l.LINK_LEVEL+1
+  8  FROM links_to_AK l, airport_link$ a
+  9  WHERE a.START_NODE_ID = a.END_NODE_ID
+ 10  AND a.END_NODE_ID = 11953
+ 11  )
+ 12  SELECT START_NODE_ID, END_NODE_ID, LINK_LEVEL
+ 13  FROM links_to_AK
+ 14  WHERE LINK_LEVEL <=10
+ 15  ORDER BY LINK_LEVEL;
+
+START_NODE_ID END_NODE_ID LINK_LEVEL                                            
+------------- ----------- ----------                                            
+        11336       10299          0                                            
+
+SQL> SELECT b.NAME_LONG FROM COUNTRIES c, COUNTRIES b WHERE
+  2  SDO_NN(b.GEOMETRY, c.GEOMETRY, 'sdo_num_res=6') = 'TRUE'
+  3  AND c.NAME_LONG = 'United Kingdom'
+  4  AND b.NAME_LONG <> 'United Kingdom';
+
+NAME_LONG                                                                       
+--------------------------------------------------------------------------------
+Netherlands                                                                     
+Germany                                                                         
+Ireland                                                                         
+Belgium                                                                         
+France                                                                          
+
+SQL> SELECT c.NAME_LONG FROM COUNTRIES c, RIVERS r
+  2  WHERE SDO_OVERLAPS (c.GEOMETRY, r.GEOMETRY) = 'TRUE'
+  3  AND r.NAME = 'Amazon';
+
+NAME_LONG                                                                       
+--------------------------------------------------------------------------------
+Peru                                                                            
+Brazil                                                                          
+
+SQL> SELECT b.NAME_LONG FROM COUNTRIES c, COUNTRIES b WHERE
+  2  SDO_TOUCH(c.GEOMETRY, b.GEOMETRY) = 'TRUE'
+  3  AND c.NAME_LONG = 'China'
+  4  AND b.NAME_LONG <> 'China';
+
+NAME_LONG                                                                       
+--------------------------------------------------------------------------------
+Afghanistan                                                                     
+Bhutan                                                                          
+Kazakhstan                                                                      
+Lao PDR                                                                         
+Pakistan                                                                        
+Kyrgyzstan                                                                      
+India                                                                           
+Dem. Rep. Korea                                                                 
+Russian Federation                                                              
+Myanmar                                                                         
+Mongolia                                                                        
+
+NAME_LONG                                                                       
+--------------------------------------------------------------------------------
+Nepal                                                                           
+Tajikistan                                                                      
+Vietnam                                                                         
+
+14 rows selected.
+
+SQL> Spool off
+
+TIMING SECTION
+--------------------------------------------------------------------------------
+1. SELECT a.NAME_LONG, b.NAME_LONG FROM COUNTRIES a, COUNTRIES b, user_sdo_geom_metadata m
+   WHERE SDO_GEOM.WITHIN_DISTANCE(a.GEOMETRY, m.diminfo, 1, b.GEOMETRY, m.diminfo) = 'TRUE'
+   AND a.NAME_LONG <> b.NAME_LONG;
+
+--Elapsed: 00:06:54.73
+
+
+2. SELECT a.NAME_LONG, b.NAME_LONG FROM COUNTRIES a, COUNTRIES b
+   WHERE SDO_WITHIN_DISTANCE(a.GEOMETRY, b.GEOMETRY, 'distance=1') = 'TRUE'
+   AND a.NAME_LONG <> b.NAME_LONG;
+
+-- Elapsed: 00:00:10.25
+
+3. SDO_WITHIN_DISTANCE is faster because it uses the spatial index to identify whether or 
+   not a set of objects are within x units of each other. SDO_GEOM.WITHIN_DISTANCE does not use
+   spatial indices. SDO_WITHIN_DISTANCE is an operator and SDO_GEOM.WITHIN_DISTANCE is 
+   procedure/function. 
